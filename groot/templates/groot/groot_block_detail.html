@@ -1,0 +1,104 @@
+{% extends "groot_scan-base.html" %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+<div class="content-wrap">
+	{% for b in blo %}
+	<div class="screen0">
+		<div class="wrap-holder">
+			<p class="title">
+				Block
+			</p>
+			<div class="contents">
+				<table class="table-typeB detail">
+					<tbody>
+						<tr>
+							<td> Block Height </td>
+							<td>
+								<!--만약 0번 블록이면 prev 비활성화, 마지막 블록이면 next 비활성화-->
+								{% if height == 0 %}
+									<i class="prev fas fa-caret-left"></i>
+								{% else %}
+									<a class="prev" href="/groot_scan/block/{{b.pre_block}}"> <i class="fas fa-caret-left"></i> </a>
+								{% endif %}
+									<em class="value">{{height}}</em>
+								{% if height == m_height %}
+									<i class="next fas fa-caret-right"></i>
+								{% else %}
+									<a class="next" href="/groot_scan/block/{{b.next_block}}"> <i class="fas fa-caret-right"></i> </a>
+								{% endif %}
+							</td>
+						</tr>
+						<tr>
+							<td> Time Stamp </td>
+							<td> {{b.timestamp}} <em>(UTC+9, {{b.t_diff}} ago)</em> </td>
+						</tr>
+						<tr>
+							<td> Transactions </td>
+							<td> <span>{{b.transactions}} Transactions</span> in this block </td>
+						</tr>
+						<tr>
+							<td> Hash </td>
+							<td> 0x{{b.current_hash}} </td>
+						</tr>
+						<tr>
+							<td> Prev Hash </td>
+							<td>
+								{% if height == 0 %}
+									-
+								{% else %}
+									<a class="on " title="{{b.pre_block}}" href="/groot_scan/block/{{b.pre_block}}">0x{{b.previous_hash}}</a>
+								{% endif %}
+							</td>
+						</tr>
+						<tr>
+							<td> Block size </td>
+							<td> {{block_size}} </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="screen1">
+		<div class="wrap-holder">
+			<div class="tab-holder">
+				<ul>
+					<li class="on">Transactions</li>
+				</ul>
+			</div>
+			<div class="contents">
+				<p class="txt">
+					<span>Latest<em>{{b.transactions}}</em> txns from a total of<em class="mint">1 transactions</em></span>
+				</p>
+				<table class="table-typeD">
+					<thead>
+						<tr>
+							<th> Tx Hash </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class=" on">
+								{% if height == 0 %}
+									genesis block
+								{% else %}
+									<a title="{{b.tx}}" href="/groot_scan/transaction/{{b.tx}}">
+										<span class="ellipsis">0x{{b.tx}}</span>
+									</a>
+								{% endif %}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

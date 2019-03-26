@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
+    <link href="{% static 'css/table.css' %}" rel="stylesheet">
+    <style>
+        #DataTables_Table_0_filter {
+            visibility: hidden;
+        }
+        #DataTables_Table_0_info {
+            visibility: hidden;
+        }
+        #search {
+            color:#2F89AE;
+            border-bottom: 3px solid #2F89AE; 
+        }
+        .button_style{
+            background-color: Transparent;
+            border: none;
+            cursor:pointer;
+        }
+        .col-sm-12{
+            min-height:380px;
+        }
+
+.btn-outline-danger_01 {
+    color: #007bff;
+    background-color: transparent;
+    background-image: none;
+    border-color: #007bff
+}
+
+    </style>
+{% endblock css %}
+
+{% block content %}
+
+<section>
+    <div class="container shadow" style="text-align:center;">
+        <div class="p_120">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="contents" style="min-height:670px">
+                        <div class="search">
+                            <form action="" method="get">
+                                <fieldset>
+                                    <img src="{%static '/img/GrootSearch2.png' %}" style="margin-right:100px;">
+                                    <span class="green_window">
+                                        <select id="s_option" class="s_option" name="s_option">
+                                            <option value="1">제목</option>
+                                            <option value="2">기술 요약</option>
+                                            <option value="3">제목+기술요약</option>
+                                        </select>
+                                        <input class="input_text" type="text" name="q" placeholder="찾고 싶은 기술명 혹은 키워드를 입력하세요">
+                                            <button class="button_style"><i class="fa fa-search"><input class="blind" type="submit" value="Groot 검색"></i></button>
+                                    </span>
+                                </fieldset>
+                            </form>
+                        </div>
+                    
+                        <div class><br>
+                    
+                            <div class="panel-body">
+                
+                                <table class="table table-hover dataTables-example" style="text-align:center">
+                                    <thead>
+                                    <tr>
+                                        <th style="width:5%; vertical-align: middle;"><i class="fa fa-sort">No</i></th>
+                                        <th style="width:7%; vertical-align: middle;">분류<br>번호</th>
+                                        <th style="width:10%; vertical-align: middle;">분류명</th>
+                                        <th style="width:11%; vertical-align: middle;">임치 기술명</th>
+                                        <th style="width:34%; vertical-align: middle;">기술 요약</th>
+                                        <th style="width:9%; vertical-align: middle;">회사명</th>
+                                        <th style="width:10%; vertical-align: middle;">홈페이지 주소</th>
+                                        <th style="width:11%; vertical-align: middle;">계약<br>신청</th>
+                
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                
+                                    {% if r_result %}
+                                    <p>검색 키워드 : <strong>{{ query }}</strong></p>
+                
+                                    <p> 관련 기술 총 {{ r_result|length }} 건 검색 되었습니다.</p>
+                                    <!--<p> 관련 기술 총 {{ result|length }} 건 검색 되었습니다. {{ result|pluralize }}.</p>-->
+                                    {% for r in r_result %}
+                
+                                    <tr>
+                                        <!--<td class="center">{{app_infos.enroll_idx.enroll_idx}}</td>-->
+                                        <td class="center" style=" vertical-align: middle;">{{r.sort_idx.sort_idx}}</td>
+                                        <td class="center" style=" vertical-align: middle;">{{r.sort_idx.title}}</td>
+                                        <td class="center" style=" vertical-align: middle;">{{ r.title }}</a></td>
+                                        <td class="center" style=" vertical-align: middle;">{{ r.summary }}</td>
+                                        <td class="center" style=" vertical-align: middle;">{{r.user.com_name}}</td>
+                                        <td class="center" style=" vertical-align: middle;"><a href="https://{{r.user.homepage}}">{{ r.user.homepage }}</a></td>
+
+                                       <td>
+                                            {% csrf_token %}
+                                            {% for key, value in flag1.items %}
+                                               {% if key == r.enroll_idx %}
+                                                  {% if value == 0 or value == 1 %}
+                                                     {% for cont_info in cont_infos1 %}
+                                                        {% if value == 0 %}
+                                                            {% if cont_info.enroll_idx.enroll_idx == r.enroll_idx %}
+                                                                    {% if cont_info.status == "<button class='btn btn-outline-danger ck_button disabled' style='padding: 6px 3px 6px 3px;font-size:80%; border-color:rgb(238, 89, 89); width:96px;text-align: center;'>계약 요청중</button>" %}
+                                                                        {{cont_info.status | safe}}
+                                                                     {% endif %}
+                                                            {% endif %}
+                                                        {% elif value == 1 %}
+                                                            {% if cont_info.enroll_idx.enroll_idx == r.enroll_idx %}
+                                                                    {% if cont_info.status == "<button class='btn btn-outline-danger_01 ck_button disabled' style='padding: 6px 3px 6px 3px;font-size:80%; border-color:#007bff; width:96px;text-align: center;'>계약중</button>" %}
+                                                                        {{cont_info.status | safe}}
+                                                                     {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                     {% endfor %}
+                                                  {% elif value == 2 %}
+                                                  <a href="insert/{{r.enroll_idx}}"><button type="button" class="btn btn-outline-info otp-nead" style="width: 96px; font-size:80%; border-color:#39bfd6; text-align: center">기술 계약신청</button></a>
+                                                  {% endif %}
+                                               {% endif %}
+                                            {% endfor %}
+                                        </td>
+
+                                    </tr>
+                
+                                    {% endfor %}
+                
+                                    {% else %}
+                                    <p>" {{ query }} " 에 대한 검색 결과가 없습니다.</p>
+                                    {% endif %}
+        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+
+
+{% endblock content %}
+
+{% block js %}
+    <script>
+        // Table 맨 앞 <td> 태그에 자동으로 인덱스 생성
+        var tables = document.getElementsByTagName('tbody');
+        var table = tables[tables.length - 1];
+        var rows = table.rows;
+        for(var i = 0, td; i < rows.length; i++){
+            td = document.createElement('td');
+            td.appendChild(document.createTextNode(i+1));
+            td.style ="vertical-align: middle;"
+            rows[i].insertBefore(td, rows[i].firstChild);
+        }
+
+    </script>
+    <!-- DataTables JavaScript -->
+    <script src="{% static 'datatables/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'datatables-plugins/dataTables.bootstrap.js' %}"></script>
+    <script src="{% static 'datatables-responsive/dataTables.responsive.js' %}"></script>
+
+    <script>
+    $(document).ready(function() {
+        $('.dataTables-example').DataTable({
+            "lengthMenu": [ 5,10,15 ]
+        });
+    });
+    $(".otp-nead").click(function(){
+        $.ajax({
+            url: '/need_otp',
+            success: function(result) {
+                if(result == '해당 서비스는 OTP를 발급 받은 후 사용하실 수 있습니다. Mypage    에서 OTP를 발급받아주세요.   (문의 : groot-admin@groot.co.kr)') {
+                    // alert(result)
+                    location='/mypage'
+                }
+            }
+        })
+    }
+    )
+    </script>
+
+{% endblock js %}
+
+
+<!--<body>-->
+<!--<p>You searched for: <strong>{{ query }}</strong></p>-->
+
+<!--{% if result %}-->
+<!--<p>Found {{ result|length }} book{{ result|pluralize }}.</p>-->
+<!--<ul>-->
+<!--{% for r in result %}-->
+<!--{{ r.title }}{{ r.user_id.com_name }}{{ r.summary }}-->
+<!--{% endfor %}-->
+<!--</ul>-->
+<!--{% else %}-->
+<!--<p>No result matched your search criteria.</p>-->
+<!--{% endif %}-->

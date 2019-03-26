@@ -1,0 +1,177 @@
+{% extends "mypage-base.html" %}
+{% load static %}
+
+{% block css %}
+<style>
+    #change {
+        border-color: #3189AE;
+    }
+    #change p {
+        color: #3189AE;
+    }
+</style>
+{% endblock css %}
+
+{% block sidebar %}
+<div class="contents-header">
+    <div class="contents-header-left">마이페이지</div>
+    <div class="contents-header-right">
+        <a href="/main"><i class="fas fa-home"></i></a> &nbsp; > &nbsp; <a href="/mypage">마이페이지</a> &nbsp; > &nbsp; <a href="/change">개인정보 수정</a> &nbsp; > &nbsp; <a class="header-right-last" href="/change_pw">비밀번호 변경</a>
+    </div>
+</div>
+<hr class="contents-header-hr">     
+{% endblock sidebar %}
+
+{% block content %}
+    <div class="col-lg-9">
+        <div class="contents" style="padding-bottom:110px;">
+            <h3 class="mb-30" style="padding-left:40px;color:rgb(88, 88, 88)">비밀번호 변경</h3>
+            <hr><br>
+            <div style="text-align:left;padding-left: 20px;">
+                <h6>·&nbsp;개인정보를 위해 동일한 숫자반복 등과 같이 타인이 쉽게 알아낼 수 있는 비밀번호는 사용하지 마십시오.</h6>
+                <h6>·&nbsp;개인정보 보안강화를 위해 비밀번호의 대소문자를 구분하고 있습니다. 대소문자를 확인해주세요.</h6>
+                <h6>·&nbsp;비밀번호는 주기적으로 변경해 주시기 바랍니다.</h6>
+                <br><hr>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                    <form onsubmit="return oldpw_check()" action="#" method="POST" style="padding-top: 30px;padding-left: 20px; padding-right: 20px;text-align: center;">                           
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="mt-10" style="display:block;">
+                                <input type="password" style="border: 1px solid rgb(109, 109, 109);" id="confirm_pw" name="confirm_pw"  placeholder="기존 비밀번호를 입력하세요" onfocus="this.placeholder = ''" onblur="this.placeholder='기존 비밀번호를 입력하세요'" class="form-control single-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="mt-10">
+                                <input type="password" style="border: 1px solid rgb(109, 109, 109);" id="new_pw1" name="new_pw1"  placeholder="새로 사용할 비밀번호를 입력하세요" onfocus="this.placeholder = ''" onblur="this.placeholder='새로 사용할 비밀번호를 입력하세요'" class="form-control single-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="mt-10">
+                                <input type="password" style="border: 1px solid rgb(109, 109, 109);" id="new_pw2" name="new_pw2"  placeholder="비밀번호를 한번 더 입력하세요" onfocus="this.placeholder = ''" onblur="this.placeholder='비밀번호를 한번 더 입력하세요'" class="form-control single-input">
+                            </div>
+                        </div>
+                        <div id="same"></div>
+                        <div class="form-group">
+                            <div class="mt-20">
+                                <button type="submit" class="genric-btn info circle" style="position:relative;top:80px;">변경</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-2"></div>
+            </div>
+            <hr style="position: relative;top:-40px;">
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+<script>
+    function oldpw_check() {
+        if ($("#confirm_pw").val() == ''){
+            alert('기존 비밀번호를 입력해주세요.');
+            $("#confirm_pw").focus();
+            $("#confirm_pw").focus(function(){
+                $('#confirm_pw').css("background","#F6A0A4");
+            });
+            $("#confirm_pw").blur(function(){
+                $('#confirm_pw').css("background","");
+            });return false; 
+        }
+        else {
+            $("#confirm_pw").focus(function(){
+                $('#confirm_pw').css("background","");
+            });
+        } 
+
+        if ($("#new_pw1").val() == ''){
+            alert('변경할 비밀번호를 입력해주세요.');
+            $("#new_pw1").focus();
+            $("#new_pw1").focus(function(){
+                $('#new_pw1').css("background","#F6A0A4");
+            });
+            $("#new_pw1").blur(function(){
+                $('#new_pw1').css("background","");
+            });
+            return false;
+        }
+        else {
+            $("#new_pw1").focus(function(){
+                $('#new_pw1').css("background","");
+            });
+        }
+
+        if ($("#new_pw2").val() == ''){
+            alert('변경할 비밀번호를 입력해주세요.');
+            $("#new_pw2").focus();
+            $("#new_pw2").focus(function(){
+                $('#new_pw2').css("background","#F6A0A4");
+            });
+            $("#new_pw2").blur(function(){
+                $('#new_pw2').css("background","");
+            });
+            return false;
+        }
+        else {
+            $("#new_pw2").focus(function(){
+                $('#new_pw2').css("background","");
+            });
+        }
+
+        if ($("#confirm_pw").val() != "{{userinfo.user_pw}}"){
+            alert("기존 비밀번호를 확인해주세요.")
+            $("#confirm_pw").focus();
+            $("#confirm_pw").focus(function(){
+                $('#confirm_pw').css("background","#F6A0A4");
+            });
+            $("#confirm_pw").blur(function(){
+                $('#confirm_pw').css("background","");
+            });
+            return false;
+        }
+        else {
+            $("#confirm_pw").focus(function(){
+                $('#confirm_pw').css("background","");
+            });
+        }
+
+        if ($('#confirm_pw').val() == $('#new_pw1').val()) {
+            alert("변경할 번호가 기존 비밀번호와 동일합니다.");
+            $("#confirm_pw").focus();
+            $("#confirm_pw").focus(function(){
+                $('#confirm_pw').css("background","#F6A0A4");
+            });
+            $("#confirm_pw").blur(function(){
+                $('#confirm_pw').css("background","");
+            });
+            return false;
+        }
+        else {
+            $("#confirm_pw").focus(function(){
+                $('#confirm_pw').css("background","");
+            });
+        }
+
+        if ($('#new_pw1').val() != $('#new_pw2').val()) {
+            alert("변경할 비밀번호가 일치하지 않습니다.");
+            $("#new_pw1").focus();
+            $("#new_pw1").focus(function(){
+                $('#new_pw1').css("background","#F6A0A4");
+            });
+            $("#new_pw1").blur(function(){
+                $('#new_pw1').css("background","");
+            });
+            return false;
+        }
+        else {
+            $("#new_pw1").focus(function(){
+                $('#new_pw1').css("background","");
+            });
+        }
+        return true;
+    }
+</script>
+{% endblock js %}

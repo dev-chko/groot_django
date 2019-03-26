@@ -1,0 +1,271 @@
+{% extends "mypage-base.html" %}
+{% load static %}
+
+{% block css %}
+{% endblock css %}
+
+{% block sidebar %}
+<div class="contents-header">
+    <div class="contents-header-left">마이페이지</div>
+    <div class="contents-header-right">
+        <a href="/main"><i class="fas fa-home"></i></a> &nbsp; > &nbsp; <a class="header-right-last" href="/mypage">마이페이지</a>
+    </div>
+</div>
+<hr class="contents-header-hr">    
+{% endblock sidebar %}
+
+{% block content %}
+    <div class="col-lg-9">
+        <div class="contents">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="inner-container" style="margin:0 0 30px 0;">
+                        <div class="section-table">
+                            <h3 class="title_color" style="margin-bottom:20px;padding-left: 15px;">기업 정보</h3>
+                            <div class="progress-table-wrap">
+                                <div class="progress-table">
+                                    <table class="table"style="text-align:left;">
+                                    <tbody>
+                                    <tr><th scope="row"><i class="fas fa-user-tie" style="color:#3189AE"></i>&nbsp;&nbsp;&nbsp;대 표 자</th><td>{{userinfo.com_head}}</td></tr>
+                                    <tr><th scope="row"><i class="far fa-building" style="color:#3189AE"></i>&nbsp;&nbsp;&nbsp;회 사 명</th><td>{{userinfo.com_name}}</td></tr>
+                                    <tr><th scope="row"><i class="fas fa-file-signature" style="color:#3189AE"></i>&nbsp;&nbsp;사업자등록번호</th><td>{{userinfo.com_num}}</td></tr>
+                                    <tr><th scope="row"><i class="fas fa-envelope" style="color:#3189AE"></i>&nbsp;&nbsp;이메일</th><td>{{userinfo.email}}</td></tr>
+                                    <tr><th scope="row"><i class="fas fa-phone" style="color:#3189AE"></i>&nbsp;&nbsp;핸드폰번호</th><td>{{userinfo.phone_num}}</td></tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="change_com" class="genric-btn info circle" style="font-size:14px;position: relative; right: -290px;">정보 수정</a>
+                    </div>
+                    <div class="inner-container" style="margin-bottom:20px;padding:30px 20px 35px 20px;">
+                        <div class="mb-20">
+                            <span style="float: left;padding-left: 15px;">
+                                <h3>
+                                    <i class="fas fa-key"></i>&nbsp;&nbsp;OTP 발급
+                                    {% if userinfo.otp %}
+                                        <span style="border-radius: 1rem; position:relative;top:-2px; margin-bottom: 10px; margin-left: 10px; padding: 4px 12px 4px 12px; font-size: 15px; background-color: rgb(25, 139, 25) ;color:white">이용중</span>
+                                    {% endif %}
+                                </h3>
+                            </span>
+                        </div><hr>
+                        <div style="font-weight:500;padding:0 0 10px 10px;">
+                            <span style="font-size:15px;padding-left: 5px;">OTP 발급을 통해 그루트 서비스를 보다 안전하게 이용하세요.</span><br>
+                            <span style="font-size:15px;padding-left: 5px;">인증번호 분실시 Groot고객센터로 문의하세요.</span><br>
+                            <span style="font-size:15px;padding-left: 5px;"><i class="fas fa-envelope"></i>&nbsp;groot-admin@groot.co.kr</span>
+                        </div>
+                        {% if userinfo.otp %}
+                            <button data-toggle="modal" data-target="#otp_expire" class="genric-btn danger circle" style="font-size:14px;position: relative; right: -280px;">해제하기</button>
+                        {% else %}
+                            <button id="otp_issue" class="genric-btn info circle" style="font-size:14px;position: relative; right: -280px;">발급하기</button>
+                        {% endif %}
+                    </div>
+                    <div class="modal fade" id="otp_expire">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" style="color:#db2525">OTP 해제</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body" style="font-size: 15px;font-weight: 500;text-align:left;padding:30px 30px 30px 30px;">
+                                        <p>&nbsp;Groot Chain이 제공하는 모든 서비스를 이용하기 위해서는 OTP 인증이 반드시 필요합니다.</p>
+                                        <p>&nbsp;OTP 해지를 원하실 경우 고객정보 확인을 위해 비밀번호를 다시 한 번 입력해주세요.</p><br>
+                                        <form method="POST" id="pw_check">
+                                            {% csrf_token %}
+                                            <div style="text-align:center">
+                                                <input type="password" name="user_pw" style="width:170px;margin-right:10px">
+                                                <input type="submit" id="_check" name="pw" value="해제" class="genric-btn danger" style="border-radius: 0.25rem;padding:4px;width:14%;height: 34px;line-height:normal;">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="inner-container" style="margin-bottom:40px;padding:30px 20px 80px 20px;">
+                        <a href="application_list" class="item">
+                            <div class="mb-20">
+                                <span style="float: left"><h3>내 임치물 관리</h3></span>
+                                <sapn style="float: right"><h3><i class="fas fa-chevron-right"></i></h3></sapn>
+                            </div><hr>
+                        </a>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="title_color" style="text-align:center"><h6>승인 대기중</h6></div>
+                                <div class="title_color" style="font-weight:500;position: absolute;right: 40px;padding-top:10px;">
+                                    <span style="font-size:40px;">{{enroll_ready_count}}</span> <span style="font-size:20px;">건</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <a href="application_list">
+                                    <div class="title_color_a" style="text-align:center"><h6>내 임치물</h6></div>
+                                    <div class="title_color_a" style="font-weight:500;position: absolute;right: 40px;padding-top:10px;">
+                                        <span style="font-size:40px;">{{enroll_count}}</span> <span style="font-size:20px;">건</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inner-container" style="margin-bottom:40px;padding:30px 20px 40px 20px;text-align: center;">
+                        <a href="request_list" class="item"><div class="mb-20">
+                            <span style="float: left"><h3>서비스 신청 현황</h3></span>
+                            <sapn style="float: right"><h3><i class="fas fa-chevron-right"></i></h3></sapn>
+                        </div><hr></a>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="title_color"><h6>연장</h6></div>
+                                <div class="title_color" style="font-weight:500;padding-top:10px;">
+                                    <span style="font-size:40px;">{{extend_count}}</span> <span style="font-size:20px;">건</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="title_color"><h6>계약</h6></div>
+                                <div class="title_color" style="font-weight:500;padding-top:10px;">
+                                    <span style="font-size:40px;">{{contract_count}}</span> <span style="font-size:20px;">건</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="title_color"><h6>해지</h6></div>
+                                <div class="title_color" style="font-weight:500;padding-top:10px;">
+                                    <span style="font-size:40px;">{{expire_count}}</span> <span style="font-size:20px;">건</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inner-container" style="margin-bottom:40px;padding:30px 20px 80px 20px;text-align: center">
+                        <a href="contract_list" class="item"><div class="mb-20">
+                            <span style="float: left"><h3>회사간 계약 현황</h3></span>
+                            <sapn style="float: right"><h3><i class="fas fa-chevron-right"></i></h3></sapn>
+                        </div><hr></a>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="title_color"><h6>진행중인 계약</h6></div>
+                                <div class="title_color" style="font-weight:500;position: absolute;right: 40px;padding-top:10px;">
+                                    <span style="font-size:40px;">{{contract_is_value}}</span> <span style="font-size:20px;">건</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="title_color"><h6>신청</h6></div>
+                                <div class="title_color" style="font-weight:500;position: absolute;right: 40px;padding-top:10px;">
+                                    <span style="font-size:40px;">{{contract_count_for_me}}</span> <span style="font-size:20px;">건</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="otpmodal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title" style="color:#2092a7"><i class="fas fa-key"></i>&nbsp;OTP 발급</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        
+                        <!-- Modal body -->
+                        <div class="modal-body" style="font-size: 15px;font-weight: 500;text-align:left;padding:30px 30px 30px 30px;">
+                            <p>&nbsp; 귀하의 Google 인증기 앱으로 하단의 QR코드를 스캔하여 귀하의 장치와 Groot Chain 간의 보안 링크를 생성하시기 바랍니다. 코드 스캔 후 귀하의  장치에 6자리 코드가 나타나면, 하단에 코드를 입력해주세요.</p>
+                            <p>&nbsp; 하단 복구코드를 별도로 적어두고 안전하게 보관하세요. 추후 OTP분실 시 다시 등록할 수 있는 코드입니다.</p>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div style="text-align:center;">
+                                    <div id="otp"></div>
+                                    <div id="qrcode"></div><br>
+                                    보안코드 : <input type="text" name="otp">
+                                    <input type="button" id="_optss" name="otpss" value="등록" class="genric-btn info" style="border-radius: 0.25rem;padding:4px;width:14%;height: 34px;line-height:normal;">
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'js/jquery.qrcode-0.6.0.min.js' %}"></script>
+<script type="text/javascript">
+    $('#otp_issue').click(function(){
+        $.ajax({
+            url:'/otpmaker/',
+            type:'post',
+            success: function(res){
+                if (res.result == 'Already Issued'){
+                    alert("이미 발급을 받았습니다. 관리자에게 문의하세요.")
+                    }else{
+                    var qrcodetext =  res.data
+
+                    if (qrcodetext.length != 0) {
+                        $('#otpmodal').modal('show');
+                        $("#qrcode").empty();
+                        $("#qrcode").qrcode({
+                            render : 'image',
+                            color: 'black',
+                            text: qrcodetext
+                            });
+                    }else{
+                        return false;
+                    }
+                $("#otp").empty();
+                $('#otp').append(`<h4 style="color:#3189AE;">${res.otp}</h4>`)
+                }
+            }
+        })
+        return false
+    })
+    //$('input[type=submit]').click(function() {
+    $('#_optss').click(function() {
+        $.ajax({
+            url: '/mypage_otp',
+            type: 'post',
+            data: $('form').serialize(),
+            success: function(result) {
+                if(result == '로그인 되었습니다.') {
+                    alert('OTP가 정상적으로 발급되었습니다. 다시 로그인해주십시오.')
+                    location='/login'
+                } else {
+                alert(result)
+                }
+            },
+        })
+        return false
+    })
+    $('#_check').click(function() {
+        $.ajax({
+            url: '/otp_pwcheck',
+            type: 'post',
+            data: $('#pw_check').serialize(),
+            success: function(result) {
+                if(result == '성공') {
+                    alert('OTP 서비스가 정상적으로 해지되었습니다.')
+                    location='mypage'
+                } else {
+                alert('비밀번호를 다시 확인해주십시오.')
+                }
+            },
+        })
+        return false
+    })
+
+    
+</script>
+
+{% endblock js %}
+
+

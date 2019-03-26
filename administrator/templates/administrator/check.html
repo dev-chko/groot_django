@@ -1,0 +1,133 @@
+{% extends "admin-base.html" %}
+{% load static %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+    <!--================Loading Area =================-->
+    <div id="load" style="display:none;">
+        <img src="{% static 'img/loading.gif' %}" alt="loading">
+    </div>
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">유사도 검사 결과</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    
+                        {% if request_count == 0 %}
+                            <div class='alert alert-success'><p>신청된 임치물의 요약글에 대해 높은 유사도를 가진 내용이 없습니다.</p></div>
+                        {% else %}
+                            <div class="alert alert-danger"><p>유사도가 높게 확인된 임치물이 {{request_count}} 건 검색되었습니다.</p></div>
+                        {% endif %}
+                    
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example" style="text-align:center;">
+                            <thead>
+                                <th>번호</th>
+                                <th>임치 기술명</th>
+                                <th>해당 임치물의 기술 요약</th>
+                                <th>유사도(%)</th>
+                            </thead>
+                            <tbody>
+                                {% for value in test %}
+                                    <tr height="80px" >
+                                        <td style="vertical-align: middle;">{{value.0 | safe}}</td>
+                                        <td style="vertical-align: middle;">{{value.1 | safe}}</td>
+                                        <td style="vertical-align: middle;">{{value.2 | safe}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <form action="" method="POST" style="text-align:center; margin-bottom: 50px">
+                            {% csrf_token %}
+                            <div class="" style="margin-top:80px; text-align:center;">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn submit_btn btn-primary" data-toggle="modal" data-target="#acceptModal">승인</button>
+                                    
+                                <!-- Modal -->
+                                <div class="modal fade" id="acceptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Groot Chain</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" style="margin:20px;">
+                                        해당 신청에 대한 임치승인을 승인하시겠습니까?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                                        <button type="submit" name="yes" value="yes" class="btn btn-primary" onclick="accept();">승인</button>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn submit_btn btn-danger" data-toggle="modal" data-target="#deniedModal">반려</button>
+                                    
+                                <!-- Modal -->
+                                <div class="modal fade" id="deniedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Groot Chain</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" style="margin:20px;">
+                                                해당 신청에 대한 임치승인을 반려하시겠습니까?
+                                            </div>
+                                            <form action="#" method="POST">
+                                                {% csrf_token %}
+                                                <div class="form-group" style="padding:0 20px 0 20px">
+                                                    <label for="message-text" class="col-form-label">반려 사유를 입력하세요:</label>
+                                                    <textarea class="form-control" id="refused_reason" name="refused_reason" style="border:1px solid #808080;"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                                                    <button type="submit" name="no" value="no" class="btn btn-danger" onclick="denied();">반려</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+<script>
+    function accept() {
+	alert("승인처리 되었습니다.");
+    }
+    function denied() {
+	alert("반려처리 되었습니다.");
+    }
+</script>
+<script>
+    // Table 맨 앞 <td> 태그에 자동으로 인덱스 생성
+    var tables = document.getElementsByTagName('tbody');
+    var table = tables[tables.length - 1];
+    var rows = table.rows;
+    for(var i = 0, td; i < rows.length; i++){
+        td = document.createElement('td');
+        td.appendChild(document.createTextNode(i+1));
+        td.style ="vertical-align: middle;"
+        rows[i].insertBefore(td, rows[i].firstChild);
+    }
+</script>
+{% endblock js %}

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+    <head>
+         <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" href="{%static 'img/favicon.ico' %}" type="image/ico">
+        <title>Groot Blockchain</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{%static 'css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{%static 'vendors/linericon/style.css' %}">
+        <link rel="stylesheet" href="{%static 'css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{%static 'vendors/owl-carousel/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{%static 'vendors/lightbox/simpleLightbox.css' %}">
+        <link rel="stylesheet" href="{%static 'vendors/nice-select/css/nice-select.css' %}">
+        <link rel="stylesheet" href="{%static 'vendors/animate-css/animate.css' %}">
+        <link rel="stylesheet" href="{%static 'vendors/flaticon/flaticon.css' %}">
+        <!-- main css -->
+        <link rel="stylesheet" href="{%static 'css/style.css' %}">
+        <link rel="stylesheet" href="{%static 'css/responsive.css' %}">
+        <link href="{%static 'css/admin_font.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <!-- Loading CSS-->
+        <link rel="stylesheet" href="{%static 'css/loader.css' %}">
+        <style>
+            #mypage {
+                color:#3189AE;
+            }
+            #user {
+                border-bottom: 3px solid #3189AE; 
+            }
+            #mypage:hover {
+                color:white;
+            }
+        </style>
+        <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR" rel="stylesheet">
+        <style>
+            section {
+                font-family: 'Noto Sans KR', sans-serif;
+                font-size: 15px;
+            }
+            a.top {
+                width: 50px;
+                position: fixed;
+                right: 40px;
+                bottom: 110px;
+                display: none;
+            }
+        </style>
+        {% block css %}
+        {% endblock css %}
+    </head>
+    <body>
+        <a href="#" class="top" style="color:#2F89AE"><i class="fas fa-chevron-circle-up fa-4x"></i></a>
+        <div class="modal hide" id="testmain">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="color:#2092a7">OTP 인증</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    
+                    <!-- Modal body -->
+                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                        <h4><span style="color:#3189ae">OTP 인증정보</span>를 이용하고 있습니다.</h4>
+                        <h4>핸드폰 앱에 생성된 6자리 OTP 인증코드를 입력해주세요.</h4>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="password" name="otp">
+                            <input type="submit" name="otp">
+                        </form>
+                    </div>
+                    
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--================Loading Area =================-->
+        <div id="load" style="display:none;">
+            <img src="{% static 'img/loading.gif' %}" alt="loading">
+        </div>
+        <!--================Header Menu Area =================-->
+        <header class="header_area">
+            <div class="main_menu" id="mainNav">
+                <nav class="navbar navbar-expand-lg navbar-light" style="background-color:white;">
+                    <div class="container">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <a class="navbar-brand logo_h" href="/main"><img src="{%static 'img/rsz_grootlogo.png' %}" alt=""><img src="{%static 'img/rsz_grootlogo.png' %}" alt=""></a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                            <ul class="nav navbar-nav menu_nav ml-auto">
+                                <li class="nav-item submenu dropdown">
+									<a href="#" class="nav-link-other dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">소개</a>
+									<ul class="dropdown-menu" >
+										<li class="nav-item"><a class="nav-link" href="/about_introduce"><i class="fa fa-balance-scale"></i>&nbsp;&nbsp;임치 제도</a></li>
+										<li class="nav-item"><a class="nav-link" href="/about_us"><i class="far fa-smile-o"></i>&nbsp;&nbsp;About Us</a></li>
+									</ul>
+								</li>
+                                <li class="nav-item"><a class="nav-link-other otp-nead" href="/application" >기술임치신청</a></li>
+                                <li class="nav-item"><a class="nav-link-other need_login" href="/search" >기술검색</a></li>
+                                <li class="nav-item"><a class="nav-link-other otp-nead" href="/issue" >증명서 발급</a></li>
+                                <li class="nav-item submenu dropdown">
+                                    <a href="#" class="nav-link-other dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">임치문서관리</a>
+                                    <ul class="dropdown-menu" >
+                                        <li class="nav-item"><a class="nav-link otp-nead" href="/read"><i class="far fa-file-alt"></i>&nbsp;&nbsp;문서열람</a></li>
+                                        <li class="nav-item"><a class="nav-link otp-nead" href="/validate"><i class="far fa-check-square"></i>&nbsp;&nbsp;원본검증</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item"><a class="nav-link-other" href="/groot_scan">Groot Scan</a></li>
+                                {%if request.session.user_id %}
+                                    <li class="nav-item submenu dropdown">
+                                        <a class="nav-link-other" href="#" data-toggle="dropdown" style="padding-top:6px;margin-left: 2px;" id="user"><i class="fas fa-user fa-2x" style="color:#2F89AE"></i></a>
+                                        <ul class="dropdown-menu">
+                                            <li class="nav-item"><a class="nav-link" href="/mypage" id="mypage"><i class="far fa-user"></i>&nbsp;&nbsp;마이페이지</a></li>
+                                            <li class="nav-item"><a class="nav-link logout" href="/logout"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;로그아웃</a></li>
+                                        </ul>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item"><a class="nav-link-other" href="/login" style="color:#2F89AE"><i class="fas fa-sign-in-alt"></i>&nbsp;로그인</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+        </header>
+        <!--================Header Menu Area =================-->
+        <!-- background-image:url('static/img/pattern1.png'); background-size: cover -->
+        <section>
+            <div class="container shadow" style="background-color:white;">
+                <div class="p_120">
+                        {% block sidebar %}
+                        {% endblock sidebar %}
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="blog_right_sidebar">
+                                <aside class="single_sidebar_widget author_widget">
+                                    <img class="author_img rounded-circle" src="{% static 'img/blog/user2.jpg' %}" alt="">
+                                    <div><h4 style="color:#3189AE; margin: 20px;">{{ request.session.user_id }} 님</h4></div>
+                                    <hr style="margin-bottom:30px;">
+                                </aside>
+                                <aside class="single_sidebar_widget post_category_widget">
+                                    <ul class="list cat-list" >
+                                        <li id="application_list">
+                                            <a href="/application_list">
+                                                <p>내 임치물 관리</p>
+                                            </a>
+                                        </li>
+                                        <li id="request_list">
+                                            <a href="/request_list">
+                                                <p>서비스 신청 현황</p>
+                                            </a>
+                                        </li>
+                                        <li id="contract_list">
+                                            <a href="/contract_list">
+                                                <p>회사간 계약 현황</p>
+                                            </a>
+                                        </li>
+                                        <li id="change">
+                                            <a href="/change">
+                                                <p>내정보 수정</p>
+                                            </a>
+                                        </li>
+                                        <li id="bye">
+                                            <a href="/bye">
+                                                <p>회원탈퇴</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </aside>
+                            </div>
+                        </div>
+                        {% block content %}
+                        {% endblock content %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        
+
+
+        <!--================Footer Area =================-->
+        <footer>
+            <center style="margin-bottom:5px"><span style="color:white;">Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved by</span> <span><b style="color:#2F89AE">Team Groot</b></span></center>
+            <center style="color:white"><span><i class="fas fa-envelope"></i>&nbsp;&nbsp;groot-admin@groot.co.kr</span>&nbsp;&nbsp;&nbsp;&nbsp;<span><i class="fas fa-phone"></i>&nbsp;&nbsp;1544-9001</span></center>
+        </footer>
+        <!--================End Footer Area =================-->
+
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+        <script src="{% static 'js/popper.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/stellar.js' %}"></script>
+        <script src="{% static 'vendors/lightbox/simpleLightbox.min.js' %}"></script>
+        <script src="{% static 'vendors/nice-select/js/jquery.nice-select.min.js' %}"></script>
+        <script src="{% static 'vendors/isotope/imagesloaded.pkgd.min.js' %}"></script>
+        <script src="{% static 'vendors/isotope/isotope-min.js' %}"></script>
+        <script src="{% static 'vendors/owl-carousel/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+        <script src="{% static 'js/mail-script.js' %}"></script>
+        <script src="{% static 'vendors/counter-up/jquery.waypoints.min.js' %}"></script>
+        <script src="{% static 'vendors/counter-up/jquery.counterup.min.js' %}"></script>
+        <script src="{% static 'js/theme.js' %}"></script>
+        <!-- loader Javascript-->
+        <script src="{% static 'js/loading_common.js' %}"></script>
+        <script>
+            $(".otp-nead").click(function(){
+                $.ajax({
+                    url: '/need_otp',
+                    success: function(result) {
+                        if(result == '해당 서비스는 OTP를 발급 받은 후 사용하실 수 있습니다. Mypage    에서 OTP를 발급받아주세요.   (문의 : groot-admin@groot.co.kr)') {
+                            alert(result)
+                            location='/mypage'
+                        }
+                        else if(result == 'false'){
+                            alert('로그인이 필요한 서비스입니다 로그인해주세요.')
+                            location='login'
+                        }
+                    }
+                })
+            }
+            )
+            $(".need_login").click(function(){
+                $.ajax({
+                    url: '/need_login',
+                    success: function(result){
+                        if(result == 'false'){
+                            alert('로그인이 필요한 서비스입니다 로그인해주세요.');
+                            location='/login'
+                        }
+                    }
+                })
+            })
+            $(".logout").click(function(){
+                $.ajax({
+                    url: '/logout',
+                    success: function(result) {
+                        if(result == '로그아웃 되었습니다.') {
+                            alert(result)
+                            location='/main'
+                        }
+                    }
+                })
+            }
+            )
+            $( window ).scroll( function() {
+                if ( $( this ).scrollTop() > 200 ) {
+                    $( '.top' ).fadeIn();
+                } else {
+                    $( '.top' ).fadeOut();
+                }
+            } );
+            $( '.top' ).click( function() {
+                $( 'html, body' ).animate( { scrollTop : 0 }, 400 );
+                return false;
+            } );
+        </script>
+        {% block js %}
+        {% endblock js %}
+    </body>
+</html>

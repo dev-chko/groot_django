@@ -1,0 +1,557 @@
+{% extends "mypage-base.html" %}
+{% load static %}
+
+{% block css %}
+    <!-- 탭 관련 CSS 파일 -->
+    <link href="{%static 'css/tab.css' %}" rel="stylesheet">
+    <!-- Pagination 및 검색을 위한 CSS 파일 -->
+    <link href="{% static 'css/table.css' %}" rel="stylesheet">
+    <style>
+        .col-sm-12{
+            min-height:360px;
+        }
+        #request_list {
+            border-color: #3189AE;
+        }
+        #request_list p {
+            color: #3189AE;
+        }
+        table > tbody > tr > td > a {
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 300px; 
+            display: inline-block;
+        }
+        table > tbody > tr > .name >span {
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100px; 
+            display: inline-block;
+        }
+    </style>
+{% endblock css %}
+
+{% block sidebar %}
+<div class="contents-header">
+    <div class="contents-header-left">마이페이지</div>
+    <div class="contents-header-right">
+        <a href="/main"><i class="fas fa-home"></i></a> &nbsp; > &nbsp; <a href="/mypage">마이페이지</a> &nbsp; > &nbsp; <a class="header-right-last" href="/request_list">서비스 신청 현황</a>
+    </div>
+</div>
+<hr class="contents-header-hr">    
+{% endblock sidebar %}
+
+{% block content %}
+    <div class="col-lg-9">
+        <div class="contents">
+            <!-- 소제목 -->
+            <h3 class="mb-30 title_color" style="padding-left:40px;color:rgb(88, 88, 88)">서비스 신청 현황</h3>
+            <hr>
+            <!-- Tab Menu -->
+            <ul class="nav nav-tabs" role="tablist" style="font-weight:500;">
+            <li class="nav-item">
+                <a class="nav-link active" href="#extend" role="tab" data-toggle="tab">연장신청 현황</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#contract" role="tab" data-toggle="tab">계약신청 현황</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#expire" role="tab" data-toggle="tab">해지신청 현황</a>
+            </li>
+            </ul>
+
+            <!-- Tab Contents -->
+            <div class="tab-content" >
+                <div role="tabpanel" class="tab-pane active" id="extend" > 
+                    <table class="table table-hover dataTables-example" width="100%" style="text-align:center;" >
+                        <thead>
+                            <tr>
+                                <th width='10%'>No</th>
+                                <th width='35%'>임치 기술명</th>
+                                <th width='15%'>연장기간</th>
+                                <th width='25%'>신청날짜</th>
+                                <th width='15%'>신청상태</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                        {% for list in extend_lists %}
+                            <tr>
+                                {% if list.status == "<td style='color:green;font-weight:500'>대기중</td>" or list.status == "<td style='color:blue;font-weight:500'>승인</td>" %}
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#extend{{list.enroll_idx.enroll_idx}}" style="font-weight:500;">{{list.enroll_idx.title}}</a>
+                                        <!-- The Modal -->
+                                        <div class="modal fade" id="extend{{list.enroll_idx.enroll_idx}}">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content">
+                                                
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style='color:#2092a7'>연장 신청 사유</h4>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                                                        <table class="table table-striped table-bordered table-hover" width="100%" style="text-align: center;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>임치 기술명</td>
+                                                                    <td>{{list.enroll_idx.title}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="20%">신청 사유</td>
+                                                                    <td>{{list.reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>신청 시간</td>
+                                                                    <td>{{list.c_date}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>상태</td>
+                                                                    {{list.status | safe}}
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>연장 기간</td>
+                                                                    <td>
+                                                                        {{list.term}} 년 <br><hr>
+                                                                        {{list.enroll_idx.enroll_date | date:"Y년 M d일"}} <span style="color:black;font-weight:500;">~ {{list.enroll_idx.end_date | date:"Y년 M d일"}}</span>
+                                                                    </td>
+                                                                </tr>
+                                                                {% if list.status == "<td style='color:blue;font-weight:500'>승인</td>" %}
+                                                                    <tr>
+                                                                        <td>Transaction ID</td>
+                                                                        {% if list.extend_tx %}
+                                                                            <td>{{list.extend_tx}}</td>
+                                                                        {% else %}
+                                                                            <td>-</td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>승인 시간</td>
+                                                                        <td>{{list.accept_date}}</td>
+                                                                    </tr>
+                                                                {% endif %}
+                                                            </thead>
+                                                        </table>
+                                                        <div style="text-align:center;"><img src="{%static 'img/rsz_grootlogo.png' %}"></div>
+                                                    </div>
+                                                    
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#extendrefused{{list.enroll_idx.enroll_idx}}" style="font-weight:500;">{{list.enroll_idx.title}}</a>
+                                        <!-- The Modal -->
+                                        <div class="modal fade" id="extendrefused{{list.enroll_idx.enroll_idx}}">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content">
+                                                
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style='color:rgb(211, 63, 37)'>반려 사유</h4>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                                                        <table class="table table-striped table-bordered table-hover" width="100%" style="text-align: center;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>임치 기술명</td>
+                                                                    <td>{{list.enroll_idx.title}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="20%">신청 사유</td>
+                                                                    <td>{{list.reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>신청 시간</td>
+                                                                    <td>{{list.c_date}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>상태</td>
+                                                                    {{list.status | safe}}
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>연장 기간</td>
+                                                                    <td>
+                                                                        {{list.term}} 년 <br><hr>
+                                                                        {{list.enroll_idx.enroll_date | date:"Y년 M d일"}} <span style="color:black;font-weight:500;">~ {{list.enroll_idx.end_date | date:"Y년 M d일"}}</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>반려 사유</td>
+                                                                    <td>{{list.refused_reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>반려 시간</td>
+                                                                    <td>{{list.accept_date}}</td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <div style="text-align:center;"><img src="{%static 'img/rsz_grootlogo.png' %}"></div>
+                                                    </div>
+                                                    
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                                <td>{{list.term}} 년</td>
+                                <td>{{list.c_date}}</td>
+                                {{list.status | safe}}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <script>
+                            var tables = document.getElementsByTagName('tbody');
+                            var table = tables[tables.length - 1];
+                            var rows = table.rows;
+                            for(var i = 0, td; i < rows.length; i++){
+                                td = document.createElement('td');
+                                td.appendChild(document.createTextNode(i+1));
+                                rows[i].insertBefore(td, rows[i].firstChild);
+                            }
+                        </script>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane " id="contract">
+                    <table class="table table-hover dataTables-example" width="100%" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="30%">임치 기술명</th>
+                                <th width="15%">임치기업</th>
+                                <th width="15%">계약기간</th>
+                                <th width="20%">신청날짜</th>
+                                <th width="15%">신청상태</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                        {% for list in contract_lists %}
+                            <tr>
+                                {% if list.status == "<td style='color:green;font-weight:500'>대기중</td>" or list.status == "<td style='color:blue;font-weight:500'>승인</td>" %}
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#contract{{list.enroll_idx.enroll_idx}}" style="font-weight:500;">{{list.enroll_idx.title}}</a>
+                                        <!-- The Modal -->
+                                        <div class="modal fade" id="contract{{list.enroll_idx.enroll_idx}}">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content">
+                                                
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style='color:#2092a7'>계약 신청 사유</h4>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                                                        <table class="table table-striped table-bordered table-hover" width="100%" style="text-align: center;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>임치 기술명</td>
+                                                                    <td>{{list.enroll_idx.title}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>임치 기업</td>
+                                                                    <td>{{list.enroll_idx.user.com_name}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>계약 기간</td>
+                                                                    <td>{{list.term}} 년</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="20%">신청 사유</td>
+                                                                    <td>{{list.reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>신청 시간</td>
+                                                                    <td>{{list.c_date}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>상태</td>
+                                                                    {{list.status | safe}}
+                                                                </tr>
+                                                                {% if list.status == "<td style='color:blue;font-weight:500'>승인</td>" %}
+                                                                    <tr>
+                                                                        <td>Transaction ID</td>
+                                                                        {% if list.contract_tx %}
+                                                                            <td>{{list.contract_tx}}</td>
+                                                                        {% else %}
+                                                                            <td>-</td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>승인 시간</td>
+                                                                        <td>{{list.accept_date}}</td>
+                                                                    </tr>
+                                                                {% endif %}
+                                                            </thead>
+                                                        </table>
+                                                        <div style="text-align:center;"><img src="{%static 'img/rsz_grootlogo.png' %}"></div>
+                                                    </div>
+                                                    
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#contractrefused{{list.enroll_idx.enroll_idx}}" style="font-weight:500;">{{list.enroll_idx.title}}</a>
+                                        <!-- The Modal -->
+                                        <div class="modal fade" id="contractrefused{{list.enroll_idx.enroll_idx}}">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content">
+                                                
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style='color:rgb(211, 63, 37)'>반려 사유</h4>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                                                        <table class="table table-striped table-bordered table-hover" width="100%" style="text-align: center;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>임치 기술명</td>
+                                                                    <td>{{list.enroll_idx.title}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>임치 기업</td>
+                                                                    <td>{{list.enroll_idx.user.com_name}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>계약 기간</td>
+                                                                    <td>{{list.term}} 년</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="20%">신청 사유</td>
+                                                                    <td>{{list.reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>신청 시간</td>
+                                                                    <td>{{list.c_date}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>상태</td>
+                                                                    {{list.status | safe}}
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>반려 사유</td>
+                                                                    <td>{{list.refused_reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>반려 시간</td>
+                                                                    <td>{{list.accept_date}}</td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <div style="text-align:center;"><img src="{%static 'img/rsz_grootlogo.png' %}"></div>
+                                                    </div>
+                                                    
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                                <td class="name"><span>{{list.enroll_idx.user.com_name}}</span></td>
+                                <td>{{list.term}} 년</td>
+                                <td>{{list.c_date}}</td>
+                                {{list.status | safe}}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <script>
+                            var tables = document.getElementsByTagName('tbody');
+                            var table = tables[tables.length - 1];
+                            var rows = table.rows;
+                            for(var i = 0, td; i < rows.length; i++){
+                                td = document.createElement('td');
+                                td.appendChild(document.createTextNode(i+1));
+                                rows[i].insertBefore(td, rows[i].firstChild);
+                            }
+                        </script>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane " id="expire">
+                    <table class="table table-hover dataTables-example" width="100%" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th width="100px">No</th>
+                                <th width="300px">임치 기술명</th>
+                                <th width="240px">신청날짜</th>
+                                <th width="110px">신청상태</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                        {% for list in expire_lists %}
+                            <tr>
+                                {% if list.status == "<td style='color:green;font-weight:500'>대기중</td>" or list.status == "<td style='color:blue;font-weight:500'>승인</td>" %}
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#expire{{list.enroll_idx.enroll_idx}}" style="font-weight:500;">{{list.enroll_idx.title}}</a>
+                                        <!-- The Modal -->
+                                        <div class="modal fade" id="expire{{list.enroll_idx.enroll_idx}}">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content">
+                                                
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style='color:#2092a7'>해지 신청 사유</h4>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                                                        <table class="table table-striped table-bordered table-hover" width="100%" style="text-align: center;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>임치 기술명</td>
+                                                                    <td>{{list.enroll_idx.title}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="20%">신청 사유</td>
+                                                                    <td>{{list.reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>신청 시간</td>
+                                                                    <td>{{list.c_date}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>상태</td>
+                                                                    {{list.status | safe}}
+                                                                </tr>
+                                                                {% if list.status == "<td style='color:blue;font-weight:500'>승인</td>" %}
+                                                                    <tr>
+                                                                        <td>승인 시간</td>
+                                                                        <td>{{list.accept_date}}</td>
+                                                                    </tr>
+                                                                {% endif %}
+                                                            </thead>
+                                                        </table>
+                                                        <div style="text-align:center;"><img src="{%static 'img/rsz_grootlogo.png' %}"></div>
+                                                    </div>
+                                                    
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#expirerefused{{list.enroll_idx.enroll_idx}}" style="font-weight:500;">{{list.enroll_idx.title}}</a>
+                                        <!-- The Modal -->
+                                        <div class="modal fade" id="expirerefused{{list.enroll_idx.enroll_idx}}">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content">
+                                                
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style='color:rgb(211, 63, 37)'>반려 사유</h4>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                                                        <table class="table table-striped table-bordered table-hover" width="100%" style="text-align: center;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>임치 기술명</td>
+                                                                    <td>{{list.enroll_idx.title}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="20%">신청 사유</td>
+                                                                    <td>{{list.reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>신청 시간</td>
+                                                                    <td>{{list.c_date}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>상태</td>
+                                                                    {{list.status | safe}}
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>반려 사유</td>
+                                                                    <td>{{list.refused_reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>반려 시간</td>
+                                                                    <td>{{list.accept_date}}</td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <div style="text-align:center;"><img src="{%static 'img/rsz_grootlogo.png' %}"></div>
+                                                    </div>
+                                                    
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                                <td>{{list.c_date}}</td>
+                                {{list.status | safe}}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <script>
+                            var tables = document.getElementsByTagName('tbody');
+                            var table = tables[tables.length - 1];
+                            var rows = table.rows;
+                            for(var i = 0, td; i < rows.length; i++){
+                                td = document.createElement('td');
+                                td.appendChild(document.createTextNode(i+1));
+                                rows[i].insertBefore(td, rows[i].firstChild);
+                            }
+                        </script>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+<!-- DataTables JavaScript -->
+<script src="{% static 'datatables/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'datatables-plugins/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'datatables-responsive/dataTables.responsive.js' %}"></script>
+
+<script>
+$(document).ready(function() {
+    $('.dataTables-example').DataTable({
+        "lengthMenu": [ 5, 10, 15 ]
+    });
+});
+</script>
+{% endblock js %}

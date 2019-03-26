@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+
+<style>
+    .wrap {margin: 2px auto; padding: 1px;}
+    .wrap table{width: 100%; height: 45%; text-align:center; border-style: ridge; border-color: #b8b6b6;}
+    .wrap table tr td{border:1px solid #000; font-weight: bold;}
+</style>
+{% endblock css %}
+
+{% block content %}
+<section>
+        <div class="container shadow" style="text-align:center;">
+            <div class="p_120">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="contents-header" style="margin-bottom: 140px;">
+                            <div class="contents-header-left" >
+                                    <h1>
+                                    <img src="{% static 'img/verified1.png' %}" style="width: 70px;padding-right: 13px;">
+                                    '{{enroll_info.title}}'&nbsp&nbsp에 대한 문서 원본 검증
+                                </h1>
+                            </div>
+                        </div>
+
+
+                        <!--<div class="contents" style="background-image: url({% static 'img/GBC-Logo.png' %}); background-size:cover; background-repeat:no-repeat ;">-->
+                        <div class="contents">
+                            <div class="row" style="margin-right: 20px; margin-left: 20px;">
+
+                                <div class="col-lg-4" style="flex: 0 0 28%; max-width: 28%;">
+                                    <div id="jstree shadow" style="padding-left: inherit;     overflow-y: auto;    height: 468px; text-align: -webkit-left; width: 410px height:468px;">
+                                    <div style="padding-left:10px; overflow:auto;">
+                                        <img src="{% static 'img/icon-folder-open.gif'%}" style="width: 23px;"> 업로드된 파일 목록
+                                        <ul>
+                                          {% for file in file_info %}
+                                                <li style="list-style: none;">
+                                                    <img src="{% static 'img/icon-file.gif'%}"> {{file.file_name}}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="col-lg-1" style="flex: 0 0 5%; max-width: 5%;"></div>
+                                <div class="col-lg-7" aria-rowspan="2"  style="flex: 0 0 67%; max-width: 67%;">
+                                    <div class="row shadow" style="height:200px; background-color:#c4cad069;    padding-left: 27px; padding-right: 27px;">
+                                        <div class="form-group" style="margin:auto;">
+                                            <form method="post" enctype="multipart/form-data" action="">
+                                                {% csrf_token %}
+                                                <input type="file" name="validate_file" id="vf" style="border: 1px solid #00000008;"><br><br><br>
+                                                <button type="submit" id="" class="btn btn-info" style="font-size:large; background:linear-gradient(to left,#67b5d494,#286ebbbd);" ><span><i class="icon-check"></i></span>검증하기 </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="row shadow" style="height: 200px; margin-top:68px; background-color:#c4cad069; ">
+                                            {% if method == 'get' %}
+                                                <div id="validate_info" style="margin:auto;"><h5>파일 업로드 후 검증하기 버튼을 누르면<br><br> 해당 문서에 대한 원본 검증결과가 나타납니다.</h5></div>
+                                                <div>
+                                            {% else %}
+                                                <div id="validate_result" style="margin:auto; text-align:center;">
+                                                       {% if ck_val == 0 %}
+                                                            <h5>
+                                                                <p><i class="fas fa-quote-left"></i> &nbsp&nbsp {{file_name}} &nbsp&nbsp<i class="fas fa-quote-right"></i></p>
+                                                                <p style="color:blue;">업로드된 파일은 원본이 맞습니다.</p>
+                                                                <div class="wrap"></div>
+                                                            </h5>
+                                                        {% elif ck_val == 1 %}
+                                                            <h5>
+                                                                <p><i class="fas fa-quote-left"></i> &nbsp&nbsp {{file_name}} &nbsp&nbsp<i class="fas fa-quote-right"></i></p>
+                                                                <p style="color:red;">업로드된 파일은 위변조 되었습니다.</p>
+                                                                <div class="wrap"></div>
+                                                            </h5>
+                                                        {% else %}
+                                                            <h5>
+                                                                <p><i class="fas fa-quote-left"></i> &nbsp&nbsp {{file_name}} &nbsp&nbsp<i class="fas fa-quote-right"></i></p>
+                                                                <p style="color:red;">업로드된 파일은 임치되지 않은 문서입니다.<br>
+                                                                    다시 한 번 확인 후 검증해주시기 바랍니다.</p>
+                                                            </h5>
+                                                        {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</section>
+
+{% endblock content %}
+
+{% block js %}
+<script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
+
+<script>
+    let table_html = `
+                    <table>
+                        <tr>
+                            <td> &nbsp 임치된 문서의 &nbsp<br>hash값 </td>
+                            <td> {{true_hash}} </td>
+                        </tr>
+                        <tr>
+                            <td> &nbsp 업로드한 문서의 &nbsp<br>hash값 </td>
+                            <td> {{val_hash}} </td>
+                        </tr>
+                    </table>
+                 `;
+    $(function() {
+        if({{ck_val}} == 0) {
+            $('.wrap').append(table_html);
+        }
+        else if({{ck_val}} == 1) {
+            $('.wrap').append(table_html);
+        }
+        else {}
+    });
+</script>
+{% endblock js %}

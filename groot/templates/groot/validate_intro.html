@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}   
+{% block css %}
+    <style>
+        .btn-outline-info:hover{color:white; background-color:#00c8a9;}
+
+        .col-sm-12{
+            min-height:400px;
+        }
+        #file {
+            color:#2F89AE;
+            border-bottom: 3px solid #2F89AE; 
+        }
+        #file-validate {
+            color:#2F89AE;
+        }
+        #file-validate:hover {
+            color:white;
+        }
+    </style>
+    <link href="{% static 'css/table.css' %}" rel="stylesheet">
+{% endblock css %}
+
+{% block content %}
+<section>
+    <div class="container shadow" style="text-align:center;">
+        <div class="p_120">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="contents-header">
+                        <div class="contents-header-left">원본검증</div>
+                        <div class="contents-header-right">
+                            <a href="/main"><i class="fas fa-home"></i></a> &nbsp; > &nbsp; <a class="header-right-last" href="/validate">원본검증</a>
+                        </div>
+                    </div>
+                    <hr class="contents-header-hr">
+
+                    <div class="contents">
+                        <table class="table table-hover dataTables-example" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="10%">번호</th>
+                                    <th width="36%">임치 기술명</th>
+                                    <th width="20%">계약 날짜</th>
+                                    <th width="20%">만료 날짜</th>
+                                    <th width="14%">원본 검증</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for enroll_info in enroll_infos %}
+                                <tr>
+                                    <!--<td>{{enroll_info.enroll_idx}}</td>-->
+                                    <td>{{enroll_info.title}}</td>
+                                    <td>{{enroll_info.enroll_date}}</td>
+                                    <td>{{enroll_info.end_date}}</td>
+                                    <td>
+                                        <a href="/validate/{{enroll_info.enroll_idx}}">
+                                            <button type="button" class="btn btn-outline-info" style="font-size:80%; border-color:#39bfd6;"> 검증하기 </button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block js %}
+
+    <!-- DataTables JavaScript -->
+    <script src="{% static 'datatables/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'datatables-plugins/dataTables.bootstrap.js' %}"></script>
+    <script src="{% static 'datatables-responsive/dataTables.responsive.js' %}"></script>
+
+    <script>
+    $(document).ready(function() {
+        $('.dataTables-example').DataTable({
+            "lengthMenu": [ 5,10,15 ]
+        });
+    });
+    </script>
+
+    <script>
+        var tables = document.getElementsByTagName('tbody');
+        var table = tables[tables.length - 1];
+        var rows = table.rows;
+        for(var i = 0, td; i < rows.length; i++){
+            td = document.createElement('td');
+            td.appendChild(document.createTextNode(i+1));
+            rows[i].insertBefore(td, rows[i].firstChild);
+        }
+    </script>
+{% endblock js %}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{%load static%}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+    <!--================Content Area =================-->
+        <section class="portfolio_details_area p_120">
+            <div class="container">
+                <div class="portfolio_details_inner">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="blog_right_sidebar">
+                                <aside class="single_sidebar_widget author_widget">
+                                    <img class="author_img rounded-circle" src="{% static 'img/blog/user.jpg' %}" alt="">
+                                    <h4>{{ request.session.user_id }}</h4>
+                                    <p>GrootBlockchain company</p>
+                                    <div class="br"></div>
+                                </aside>
+                                <aside class="single_sidebar_widget post_category_widget">
+                                    <ul class="list cat-list">
+                                        <li>
+                                            <a href="change" class="d-flex justify-content-between">
+                                                <p>내정보 수정</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="list" class="d-flex justify-content-between">
+                                                <p>계약 현황</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="bye" class="d-flex justify-content-between">
+                                                <p>회원탈퇴</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="br"></div>
+                                </aside>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-9">
+                            <div class="section-table">
+                                <h3 class="mb-30 title_color">계약 현황</h3>
+                                <table class="table table-hover" width="90%">
+                                    <thead>
+                                        <tr align="center">
+                                            <th>번호</th>
+                                            <th>기술명</th>
+                                            <th>등록 기간</th>
+                                            <th>등록 일자</th>
+                                            <th>만료 일자</th>
+                                            <th>연장</th>
+                                            <th>갱신</th>
+                                            <th>폐지</th>
+                                        </tr>
+                                    </thead>
+
+
+                                    <tbody id="enroll_info">
+                                    {% for enroll_info in enroll_infos %}
+                                        <tr align="center">
+                                            <td>{{enroll_info.enroll_idx}}</td>
+                                            <td>{{enroll_info.title}}</td>
+                                            <td>{{enroll_info.term}}</td>
+                                            <td>{{enroll_info.enroll_date}}</td>
+                                            <td>{{enroll_info.end_date}}</td>
+                                            <td>
+                                                <!--<a href="extend/{{enroll_info.enroll_idx}}">-->
+                                                <button type="button"
+                                                        class="btn ck_button btn-outline-warning extend" style="font-size:80%;"
+                                                        id="extend/{{enroll_info.enroll_idx}}"
+                                                        extend_id="{{enroll_info.enroll_idx}}" onclick="ck({{enroll_info.enroll_idx}})"> 연장
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <a href="#">
+                                                    <button type="button" class="btn btn-outline-warning" style="font-size:80%;"> 갱신 </button>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <button type="submit"
+                                                        class="btn btn-outline-warning expire_btn" style="font-size:80%;"
+                                                        id="expire/{{enroll_info.enroll_idx}}"
+                                                        expire_id="{{enroll_info.enroll_idx}}" onclick="ck2({{enroll_info.enroll_idx}})"> 해지
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    {% endfor %}
+                                </table>
+					        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+    <!--================End Content Area =================-->
+{% endblock content %}
+
+{% block js %}
+
+ <script>
+
+        function ck(s){
+         $.ajax({
+            url: '/login2',
+            type: 'POST',
+            dataType : 'json',
+            data: {'s' : s},
+            success: function(result) {
+            if(result.ck_val == 0) {
+                    alert('이미 연장신청이 진행 중 입니다.')
+                    location.reload()
+                }
+                else {
+                       location.href="extend/" + s ;
+                }
+            }
+        });
+    };
+
+</script>
+<script>
+
+        function ck2(s){
+         $.ajax({
+            url: '/login3',
+            type: 'POST',
+            dataType : 'json',
+            data: {'s' : s},
+            success: function(result) {
+            if(result.ck_val == 0) {
+                    alert('이미 해지신청이 진행 중 입니다. ')
+                    location.reload()
+                }else if(result.ck_val == 3) {
+                    alert('해당 임치물에 진행중인 계약이 있습니다. \n기술 계약 해지는 관리자에게 문의하세요.')
+                    location.reload()
+                }
+                else {
+                       location.href="expire/" + s ;
+
+                }
+            }
+        });
+    };
+
+</script>
+
+{% endblock js %}

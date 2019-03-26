@@ -1,0 +1,70 @@
+{% extends "mypage-base.html" %}
+{% load static %}
+
+{% block css %}
+<style>
+    #change {
+        border-color: #3189AE;
+    }
+    #change p {
+        color: #3189AE;
+    }
+</style>
+{% endblock css %}
+
+{% block sidebar %}
+<div class="contents-header">
+    <div class="contents-header-left">마이페이지</div>
+    <div class="contents-header-right">
+        <a href="/main"><i class="fas fa-home"></i></a> &nbsp; > &nbsp; <a href="/mypage">마이페이지</a> &nbsp; > &nbsp; <a href="/change">개인정보 수정</a> &nbsp; > &nbsp; <a class="header-right-last" href="/change_com">기업정보 변경</a>
+    </div>
+</div>
+<hr class="contents-header-hr">    
+{% endblock sidebar %}
+
+{% block content %}
+    <div class="col-lg-9">
+        <div class="contents" style="padding-bottom:110px;">
+            <h3 class="mb-30" style="padding-left:40px;color:rgb(88, 88, 88)">기업정보 변경</h3>
+            <hr><br>
+            <div style="text-align:left;padding-left: 20px;">
+                <p style="font-size:17px">·&nbsp;변경하고자 하는 정보를 입력 후 변경 버튼을 누르세요.<br>
+                ·&nbsp;이메일주소, 회사 주소, 연락처에 대해 변경된 사항을 입력하여 정보를 수정할 수 있습니다.</p>
+                <br><hr>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                    <form onsubmit="check()" action="#" method="POST" style="padding-top: 30px;padding-left: 20px; padding-right: 20px;text-align: center;">                           
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="mt-10">
+                                <input type="text" style="border: 1px solid rgb(109, 109, 109);" id="email" name="email"  placeholder="변경할 이메일 주소를 입력하세요." onfocus="this.placeholder = ''" onblur="this.placeholder = '변경할 이메일 주소를 입력하세요.'" class="form-control single-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="mt-10">
+                                <input type="text" style="border: 1px solid rgb(109, 109, 109);" id="address" name="address"  placeholder="변경할 회사 주소를 입력하세요." onfocus="this.placeholder = ''" onblur="this.placeholder = '변경할 회사 주소를 입력하세요.'" class="form-control single-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="mt-10">
+                                <input type="text" style="border: 1px solid rgb(109, 109, 109);" id="phone_num" name="phone_num"  placeholder="변경할 연락처를 입력해주세요." onfocus="this.placeholder = ''" onblur="this.placeholder = '변경할 연락처를 입력해주세요.'" class="form-control single-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="mt-10">
+                                <button type="submit" class="genric-btn info circle" style="font-size:17px;position:relative;top:80px;">변경</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-2"></div>
+            </div>
+            <hr style="position: relative;top:-40px;">      
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

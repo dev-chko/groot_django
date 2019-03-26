@@ -1,0 +1,65 @@
+{% extends "groot_scan-base.html" %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+<div class="content-wrap">
+	<div class="screen0">
+		<div class="wrap-holder">
+			<p class="title"> Transaction </p>
+			<div class="contents">
+				<table class="table-typeB transaction" style="height:420px;font-size:14px">
+                    <tbody>
+                    <tr>
+                        <td> TxHash	</td>
+                        <td>
+                            {{txid}}<span class="copy clipboard-btn " data-clipboard-text="{{txid}}">Copy TxHash</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Status </td>
+                        <td class=""> Success </td>
+                    </tr>
+                    <tr>
+                        <td> Block Height </td>
+                        <td>
+                            <span>
+                                <a class="on " title="{{block_number}}" href="/groot_scan/block/{{block_number}}">{{block_number}}</a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Time Stamp </td>
+                        <td> {{timestamp}} <em>(UTC+9, {{t_diff}} ago)</em> </td>
+                    </tr>
+                    <tr>
+                        <td> Data </td>
+                        <td class="convert">
+                            <div class="scroll">
+                                <p style="white-space: pre-line;"> {{data}} </p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script>
+    $(function() {
+        var clipboard = new Clipboard('.clipboard-btn');
+        clipboard.on('success', function(e) {
+            console.log(e);
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+    });
+</script>
+{% endblock js %}

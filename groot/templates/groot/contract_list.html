@@ -1,0 +1,229 @@
+{% extends "mypage-base.html" %}
+{% load static %}
+
+{% block css %}
+<link href="{%static 'css/tab.css' %}" rel="stylesheet">
+<link href="{% static 'css/table.css' %}" rel="stylesheet">
+<style>
+    #contract_list {
+        border-color: #3189AE;
+    }
+    #contract_list p {
+        color: #3189AE;
+    }
+    .col-sm-12{
+        min-height:360px;
+    }
+    table > tbody > tr > td > a {
+        overflow: hidden; 
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 300px; 
+        display: inline-block;
+    }
+    table > tbody > tr > .name >span {
+        overflow: hidden; 
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 60px; 
+        display: inline-block;
+    }
+</style>
+{% endblock css %}
+
+{% block sidebar %}
+<div class="contents-header">
+    <div class="contents-header-left">마이페이지</div>
+    <div class="contents-header-right">
+    <a href="/main"><i class="fas fa-home"></i></a> &nbsp; > &nbsp; <a href="/mypage">마이페이지</a> &nbsp; > &nbsp; <a class="header-right-last" href="/contract_list">회사간 계약 현황</a>
+    </div>
+</div>
+<hr class="contents-header-hr">    
+{% endblock sidebar %}
+
+{% block content %}
+    <div class="col-lg-9">
+        <div class="contents">
+
+            <h3 class="mb-30 title_color" style="padding-left:40px;color:rgb(88, 88, 88)">회사간 계약 현황</h3>
+            <hr>
+            <!-- Tab Menu -->
+            <ul class="nav nav-tabs" role="tablist" style="font-weight:500;">
+            <li class="nav-item">
+                <a class="nav-link active" href="#contract" role="tab" data-toggle="tab">회사간 계약 현황</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#request" role="tab" data-toggle="tab">내게 들어온 계약 신청</a>
+            </li>
+            </ul>
+
+            <div class="tab-content" >
+                <div role="tabpanel" class="tab-pane active" id="contract">
+                    <table class="table table-hover dataTables-example" width="100%" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th width="40%">임치 기술명</th>
+                                <th width="15%">임치기업</th>
+                                <th width="15%">계약기업</th>
+                                <th width="15%">계약기간</th>
+                                <th width="15%">상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for accepted_list in contract_lists %}
+                            {% if accepted_list.enroll_idx.user.user_id == user_id or accepted_list.user.user_id == user_id %}
+                                <tr>
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#contract{{accepted_list.enroll_idx.enroll_idx}}" style="font-weight:500;">{{accepted_list.enroll_idx.title}}</a>
+                                        <!-- The Modal -->
+                                        <div class="modal fade" id="contract{{accepted_list.enroll_idx.enroll_idx}}">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-content">
+                                                
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style='color:#2092a7'>계약 상세 정보</h4>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body" style="text-align:left;padding:40px 30px 30px 30px;">
+                                                        <table class="table table-striped table-bordered table-hover" width="100%" style="text-align: center;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>임치 기술명</td>
+                                                                    <td>{{accepted_list.enroll_idx.title}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>기술 분류</td>
+                                                                    <td>{{accepted_list.enroll_idx.sort_idx}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>임치 기술 요약</td>
+                                                                    <td>{{accepted_list.enroll_idx.summary}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>임치 기업</td>
+                                                                    <td>{{accepted_list.enroll_idx.user.com_name}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>계약 기업</td>
+                                                                    <td>{{accepted_list.user.com_name}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Transaction ID</td>
+                                                                    <td>{{accepted_list.contract_tx}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="20%">신청 사유</td>
+                                                                    <td>{{accepted_list.reason}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td rowspan="2" style="vertical-align:middle;">계약 기간</td>
+                                                                    <td>{{accepted_list.term}} 년</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>{{accepted_list.accept_date}} ~ {{accepted_list.end_date}}</td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <div style="text-align:center;"><img src="{%static 'img/rsz_grootlogo.png' %}"></div>
+                                                    </div>
+                                                    
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-info" style="font-size:90%; border-color:#39bfd6;" data-dismiss="modal">닫기</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="name"><span>{{accepted_list.enroll_idx.user.com_name}}</span></td>
+                                    <td class="name"><span>{{accepted_list.user.com_name}}</span></td>
+                                    <td>{{accepted_list.term}} 년</td>
+                                    {{accepted_list.status | safe}}
+                                </tr>    
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                        <script>
+                            // Table 맨 앞 <td> 태그에 자동으로 인덱스 생성
+                            var tables = document.getElementsByTagName('tbody');
+                            var table = tables[tables.length - 1];
+                            var rows = table.rows;
+                            for(var i = 0, td; i < rows.length; i++){
+                                td = document.createElement('td');
+                                td.appendChild(document.createTextNode(i+1));
+                                rows[i].insertBefore(td, rows[i].firstChild);
+                            }
+                        </script>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="request">
+                    <table class="table table-hover dataTables-example" width="100%" style="text-align:center;">
+                        <thead>
+                            <tr>
+                                <th width="100px">No</th>
+                                <th width="300px">임치 기술명</th>
+                                <th width="100px">회사명</th>
+                                <th width="100px">계약 기간</th>
+                                <th width="200px">신청 날짜</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for list in contract_infos %}
+                            {% if list.enroll_idx.user.user_id == user_id and list.status == 0 %}
+                                <tr>
+                                    <td><a href="contract_list/{{list.cont_idx}}" class="otp-nead" style="font-weight:500;">{{list.enroll_idx.title}}</a></td>
+                                    <td class="name"><span>{{list.user.com_name}}</span></td>
+                                    <td>{{list.term}}</td>
+                                    <td>{{list.c_date}}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                        <script>
+                            // Table 맨 앞 <td> 태그에 자동으로 인덱스 생성
+                            var tables = document.getElementsByTagName('tbody');
+                            var table = tables[tables.length - 1];
+                            var rows = table.rows;
+                            for(var i = 0, td; i < rows.length; i++){
+                                td = document.createElement('td');
+                                td.appendChild(document.createTextNode(i+1));
+                                rows[i].insertBefore(td, rows[i].firstChild);
+                            }
+                        </script>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+<!-- DataTables JavaScript -->
+<script src="{% static 'datatables/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'datatables-plugins/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'datatables-responsive/dataTables.responsive.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.dataTables-example').DataTable({
+            "lengthMenu": [ 5, 10, 15 ]
+        });
+    });
+    $(".otp-nead").click(function(){
+        $.ajax({
+            url: '/need_otp',
+            success: function(result) {
+                if(result == '해당 서비스는 OTP를 발급 받은 후 사용하실 수 있습니다. Mypage    에서 OTP를 발급받아주세요.   (문의 : groot-admin@groot.co.kr)') {
+                    // alert(result)
+                    location='/mypage'
+                }
+            }
+        })
+    }
+    )
+</script>
+{% endblock js %}

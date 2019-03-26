@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    <!-- 탭 관련 CSS 파일 -->
+    <link href="{%static 'css/tab.css' %}" rel="stylesheet">
+    <!-- Pagination 및 검색을 위한 CSS 파일 -->
+    <link href="{% static 'css/table.css' %}" rel="stylesheet">
+    <style>
+        .col-sm-12{
+            min-height:400px;
+        }
+    </style>
+
+{% endblock css %}
+
+{% block content %}
+    <section>
+        <div class="container shadow" style="text-align:center;">
+            <div class="p_120">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="contents-header">
+                            <div class="contents-header-left">문서열람</div>
+                            <div class="contents-header-right">
+                                <a href="/main"><i class="fas fa-home"></i></a> &nbsp; > &nbsp; <a class="header-right-last" href="/read">문서열람</a>
+                            </div>
+                        </div>
+                        <hr class="contents-header-hr">
+                        
+                        <div class="contents">
+                            <!-- Tab Menu -->
+                            <ul class="nav nav-tabs" role="tablist" style="font-weight:500;">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#applicate" role="tab" data-toggle="tab">내 임치물에 대한 기술문서</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#cont" role="tab" data-toggle="tab">다른 기업과 계약된 기술문서 </a>
+                                </li>
+                            </ul>
+
+                            <!-- Tab Contents -->
+                            <div class="tab-content" >
+                                <div role="tabpanel" class="tab-pane active" id="applicate">
+                                    <table class="table table-hover dataTables-example " width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">No</th>
+                                                <th width="20%">임치 기업</th>
+                                                <th width="50%">임치 기술명</th>
+                                                <th width="20%">임치 문서</th>
+                                            </tr>
+                                        </thead>
+            
+                                        <tbody>
+                                            {% for enroll_info in enroll_infos %}
+                                                <tr>
+                                                    <td>{{enroll_info.user.com_name}}</td>
+                                                    <td>{{enroll_info.title}}</td>
+                                                    <td>
+                                                        {% csrf_token %}
+                                                        <button type="submit" onclick="location.href='download/{{enroll_info.enroll_idx}}'"  trid="{{enroll_info.enroll_idx}}" cont_id="0" class="btn btn-outline-primary" style="font-size:80%; border-color:#39bfd6;"> Download </button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <script>
+                                            // Table 맨 앞 <td> 태그에 자동으로 인덱스 생성
+                                            var tables = document.getElementsByTagName('tbody');
+                                            var table = tables[tables.length - 1];
+                                            var rows = table.rows;
+                                            for(var i = 0, td; i < rows.length; i++){
+                                                td = document.createElement('td');
+                                                td.appendChild(document.createTextNode(i+1));
+                                                td.style ="vertical-align: middle;"
+                                                rows[i].insertBefore(td, rows[i].firstChild);
+                                            }
+                                        </script>
+                                    </table>
+                                </div>
+                                
+                                <div role="tabpanel" class="tab-pane" id="cont">
+                                    <table class="table table-hover dataTables-example" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">No</th>
+                                                <th width="20%">임치 기업</th>
+                                                <th width="50%">계약 기술명</th>
+                                                <th width="20%">계약 문서</th>
+                                            </tr>
+                                        </thead>
+            
+                                        <tbody>
+                                            {% for contract_info in contract_infos %}
+                                                <tr>
+                                                    <td width="20%">{{contract_info.enroll_idx.user.com_name}}</td>
+                                                    <td width="50%">{{contract_info.enroll_idx.title}}</td>
+                                                    <td width="20%">
+                                                        {% csrf_token %}
+                                                        <button type="submit" onclick="location.href='download/{{contract_info.enroll_idx.enroll_idx}}'"  trid="{{enroll_info.enroll_idx}}" cont_id="0" class="btn btn-outline-primary" style="font-size:80%; border-color:#39bfd6;"> Download </button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <script>
+                                            // Table 맨 앞 <td> 태그에 자동으로 인덱스 생성
+                                            var tables = document.getElementsByTagName('tbody');
+                                            var table = tables[tables.length - 1];
+                                            var rows = table.rows;
+                                            for(var i = 0, td; i < rows.length; i++){
+                                                td = document.createElement('td');
+                                                td.appendChild(document.createTextNode(i+1));
+                                                td.style ="vertical-align: middle;"
+                                                rows[i].insertBefore(td, rows[i].firstChild);
+                                            }
+                                        </script>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                    
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block js %}
+<!-- DataTables JavaScript -->
+<script src="{% static 'datatables/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'datatables-plugins/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'datatables-responsive/dataTables.responsive.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.dataTables-example').DataTable({
+            "lengthMenu": [ 5, 10, 15 ]
+        });
+    });
+</script>
+
+
+{% endblock js %}
+
+
